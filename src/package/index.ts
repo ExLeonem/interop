@@ -57,6 +57,7 @@ enum DependencyType {
  * Parent package class.
  * Defines Base functionality all packages need to implement.
  * 
+ * 
  * @class
  */
 abstract class Package {
@@ -64,44 +65,28 @@ abstract class Package {
     private _name: string;
     private _version: string;
     private _depType: DependencyType | null;
-    private _dependencies: {[k: string]: string};
 
+    private _definitionPart: {[k: string]: {[k: string]: string}} | {[k: string]: string} | {[k: string]: string[]};
+
+    /**
+     * @param name {string} The name of the package 
+     * @param version {string} The version of the package
+     * @param depType {DependencyType | null} The dependency type
+     * @constructor
+     */
     constructor(name: string, version: string, depType: DependencyType | null) {
         this._name = name;
         this._version = version;
         this._depType = depType;
-        this._dependencies = {};
+        this._definitionPart = {};
     }
 
     /**
-     * Create the dependencies
+     * Create
+     *
+     * @returns {object} 
      */
     abstract create(): void;
-
-
-    /**
-     * Init the dependency sections the package.
-     * 
-     * @param packageManager The dependency manager to be used.
-     */
-    initDependencies(packageManager: PackageManager): void {
-
-        if (packageManager instanceof NpmManager) {
-
-        } else if (packageManager instanceof YarnManager) {
-
-        }
-    }
-
-
-    /**
-     * 
-     * 
-     * @param otherPackage Another Package to check
-     */
-    isCompatible(otherPackage: object): otherPackage is Compatible {
-        return "check" in otherPackage;
-    }
 
 
     /**
@@ -110,40 +95,89 @@ abstract class Package {
      * @param name The name of the dependency
      * @param version 
      */
-    addDependency(name: string, version: string, type: DependencyType | null) {
-        this._dependencies[name] = version;
+    addDependency(name: string, version: string, type: DependencyType | null, packageManager: PackageManager) {
+        // this._dependencies[name] = version;
+
+        let dependencyTypeKey = packageManager.getDependencyKey(type);
+
+    }
+
+
+
+    /**
+     * Check Wether the given package implements the compatible interface.
+     * @param packageToCheck The package to be checked.
+     */
+    static isCompatible(packageToCheck: object): packageToCheck is Compatible {
+        return "check" in packageToCheck;
     }
 
 
     /**
-     * -----
-     * Getter/Setter
-     * ----------------
+     * Check wether given object implements the configurabel interface.
+     * @param packageToCheck The package to be checked.
      */
+    static isConfigurable(packageToCheck: object): packageToCheck is Configurable {
+        return "getConfig" in packageToCheck;
+    }
 
-     getName(): string {
-         return this._name;
-     }
 
-     setName(name: string): void {
-         this._name = name;
-     }
+    /**
+     * Check wether given object implements the executeable interface.
+     * @param packageToCheck 
+     */
+    static isExecuteable(packageToCheck: object): packageToCheck is Executeable {
+        return "getScripts" in packageToCheck;
+    }
 
-     getVersion(): string {
-         return this._version;
-     }
 
-     setVersion(version: string): void {
-         this._version = version;
-     }
+    // --------------------
+    // Getter/Setter
+    // -----------------------
 
-     getDepType(): DependencyType | null {
-         return this._depType;
-     }
+    /**
+     * @member {string}
+     */
+    get name(): string {
+        return this._name;
+    }
 
-     setDepType(depType: DependencyType | null): void {
-        this._depType = depType;
-     }
+    set name(name: string) {
+        this._name = name;
+    }
+
+    /**
+     * @member {string}
+     */
+    get version(): string {
+        return this._version;
+    }
+
+    set version(version: string) {
+        this._version = version;
+    }
+
+    /**
+     * @member {DependencyType | null}
+     */
+    get depType(): DependencyType | null {
+        return this._depType;
+    }
+
+    set depType(depType: DependencyType | null) {
+    this._depType = depType;
+    }
+
+    /**
+     * @member {object}
+     */
+    get definitionPart(): {[k: string]: {[k: string]: string}} | {[k: string]: string} | {[k: string]: string[]} {
+        return this._definitionPart;
+    }
+
+    set definitionPart(definitionPart: {[k: string]: {[k: string]: string}} | {[k: string]: string} | {[k: string]: string[]}) {
+    this._definitionPart= definitionPart;
+    }
 }
 
 
@@ -164,8 +198,22 @@ interface Configurable {
  * @interface
  */
 interface Compatible {
-    check(otherPackage: Package, currentConfiguration: object): object;
+    update(otherPackage: Package): void;
 }
+
+
+/**
+ * For packages that provide some sort of script definition.
+ * To be executed by the package manager.
+ * 
+ * @interface
+ */
+interface Executeable {
+    getScripts(): object;
+} 
+
+
+
 
 
 export default Package;

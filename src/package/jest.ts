@@ -22,25 +22,25 @@ class Jest extends Package implements Configurable, Compatible {
 
 
     /**
-     * Handle compatibility issues with other packages. 
+     * Handle compatibility issues with other packages.
+     * Update object local template definitions. 
      * 
      * @param otherPackage {Package} The other package which will be added to the template project.
      * @param 
      */
-    check(otherPackage: Package, currentConfiguration: object): object {
+    update(otherPackage: Package): void {
 
-        switch (otherPackage.getName()) {
+        switch (otherPackage.name) {
             case "typescript": {
                 // Typescript is configured to be used
                 // Add additional dependencies
             }
         }
 
-        if (this.isCompatible(otherPackage)) {
-            otherPackage.check(this, currentConfiguration);
+        // Update the other already inserted package
+        if (Package.isCompatible(otherPackage)) {
+            otherPackage.update(this);
         }
-
-        return currentConfiguration;
     }
 
 

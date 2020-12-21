@@ -41,17 +41,40 @@ class ProjectTemplate {
 
     /**
      * Create the project template.
+     * Iterate through packages add/remove dependencies.
+     * 
      */
     create(): void {
 
+        // Check compatibility of each package
         let iterated: Package[] = [];
-        let iteration: Pipeline = new Pipeline([]);
         let baseConfig: object = this._packageManager
         this._packages.forEach(singlePackage => {
-
             
         });
+
+        // 
+
+        // Create project structure
     }
+
+
+    private resolveDependencies(currentPackage: Package, otherPackages: Package[]): Package[] {
+        
+        otherPackages.forEach(otherPackage => {
+
+            if (Package.isCompatible(otherPackage)) {
+                otherPackage.update(currentPackage);
+            }
+
+            if (Package.isCompatible(currentPackage)) {
+                currentPackage.update(otherPackage)
+            }
+        });
+
+        otherPackages.push(currentPackage);
+        return otherPackages;
+    } 
 
 
     static build(packageManager: PackageManager, packages: Package[]) {
@@ -59,7 +82,7 @@ class ProjectTemplate {
         let iterated: Package[] = [];
         
         packages.forEach(singlePackage => {
-            packageManager.addPackage(singlePackage);
+            // packageManager.addPackage(singlePackage);
         });
     }
 }

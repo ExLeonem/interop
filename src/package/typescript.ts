@@ -1,10 +1,10 @@
-import { Package, DependencyType } from '.';
+import { Package, DependencyType, Compatible } from '.';
 
 
 /**
  * 
  */
-class TypeScript extends Package {
+class TypeScript extends Package implements Compatible {
 
     private config: object;
 
@@ -13,7 +13,20 @@ class TypeScript extends Package {
         this.config = config;
     }
 
+    /**
+     * 
+     */
     create(): void {
+
+    }
+
+
+    /**
+     * Update local typescript configurations depending other packages.
+     * 
+     * @param otherPackage Other package to be added as a dependency
+     */
+    update(otherPackage: Package): void {
 
     }
 }

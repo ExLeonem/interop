@@ -1,4 +1,4 @@
-import Package from "../package";
+import Package, { DependencyType } from "../package";
 import NpmManager from '.';
 import YarnManager from '.';
 
@@ -12,8 +12,6 @@ import YarnManager from '.';
 abstract class PackageManager {
     private command: string;
     private version: string;
-    private packages: {[k: string]: Package};
-
 
     /**
      * @param command {string} Base command name for this package manager.
@@ -22,32 +20,35 @@ abstract class PackageManager {
     constructor(command: string) {
         this.command = command;
         this.version = "";
-        this.packages = {};
     }
-
-    abstract createPackageDefinition(): object; // Create project definition
-    abstract installDependencies(path: string): void;
 
     /**
-     * Add a new package to the package manager dependencies.
+     * Update the package defintions with locale definitions of package.
      * 
-     * @param pack Package to be added to the dependencies.
+     * @param singlePackage The package to use to update the package definition.
      */
-    addPackage(pack: Package): void {
+    abstract update(singlePackage: Package): void;
 
-        let packageName: string = pack.getName();
-        let packages = Object.keys(this.packages);
-        if (!packages.includes(packageName)) {
-            this.packages[packageName] = pack;
-        }
-    }
+    /**
+     * Install dependencies with a specific package manager.
+     * @param path The path to the package defintion file
+     */
+    abstract install(path: string): void;
+
+
+    /**
+     * Map the different dependency types to an object key.
+     * @param type The depency typ
+     * @returns {string} The key for the dependency section
+     */
+    abstract getDependencyKey(type: DependencyType | null): string;
 
 
     /**
      * Check wether the package manager is available/installed
      * and in path of the current system.
      *
-     * @returns true if in system else false
+     * @returns {boolean} true if in system else false
      */
     isAvailable(): boolean {
 
@@ -55,14 +56,52 @@ abstract class PackageManager {
     }
 
 
-    createBaseDefinition(name: string, author: string) {
+    /**
+     * Execute the installation command of the package manager.
+     */
+    private executeInstall(): void {
 
     }
 }
+
+/**
+ * @property NPM 
+ * @property YARN
+ * @enum
+ */
+enum PackageManagerType {
+    NPM,
+    YARN
+}
+
+
+/**
+ * Base package initialization options
+ */
+interface PackageInitOptions {
+    /**
+     * Return the package options.
+     * 
+     * @returns {object} The package definition.
+     * @function
+     */
+    getOptions(): object
+
+    /**
+     * 
+     * @param options {object} A number of initial options to be merged into the base package definition
+     * @function
+     */
+    setOptions(options: object): void;
+}
+
+
 
 
 export default PackageManager;
 export {
     YarnManager,
-    NpmManager
+    NpmManager,
+    PackageManagerType,
+    PackageInitOptions
 }

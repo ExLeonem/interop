@@ -1,8 +1,9 @@
-import PackageManager from './';
-import Package from '../package';
+import PackageManager, { PackageInitOptions } from './';
+import Package, { DependencyType } from '../package';
 
 /**
- * NPM Package Manager.
+ * Common functions to build a project template
+ * using npm as a package manager.
  * 
  * @class 
  */
@@ -12,14 +13,33 @@ class NpmManager extends PackageManager {
     
 
     /**
-     * 
-     * @param name {string} 
-     * @param author {string}
+     * @param name {string} The name of the new project
+     * @param author {string} The author of the new project
      */
     constructor(name: string, author: string) {
         super("npm");
-        this._packageDefinition = this.getBaseDefinition(name, author);
-        //this.createProjectDefinition(packages);
+        this._packageDefinition = this.createBaseDefinition(name, author);
+    }
+
+    /**
+     * Update the npm package definitions.
+     * 
+     * @param singlePackage The package to be added to the project template
+     */
+    update(singlePackage: Package): void {
+
+        if (Package.isCompatible(singlePackage)) {
+            // Check/update compatible issues
+        }
+
+        if (Package.isConfigurable(singlePackage)) {
+            // Get configuration for this specific package
+        }
+
+        if (Package.isExecuteable(singlePackage)) {
+            // Update executeable scripts
+        }
+
     }
 
     createProjectDefinition(packages: Package[]) {
@@ -37,15 +57,25 @@ class NpmManager extends PackageManager {
 
 
     /**
-     * Install all dependencies for project at given path.
+     * Install NPM dependencies using npm package manager.
      * 
-     * @param path 
+     * @param path to the package.json
      */
-    installDependencies(path: string): void {
+    install(path: string): void {
 
     }
 
-    
+
+    getDependencyKey(type: DependencyType | null): string {
+
+        let dependencyKey = "dependencies";
+        switch(type) {
+
+        }
+
+        return dependencyKey;
+    }
+
 
     /**
      * Create a base package definition file.
@@ -54,7 +84,7 @@ class NpmManager extends PackageManager {
      * @param author {string}
      * @return {object} The base configuration of the package
      */
-    private getBaseDefinition(name: string, author: string): object {
+    private createBaseDefinition(name: string, author: string): object {
         return {
             "name": name,
             "version": "1.0.0",
@@ -69,4 +99,26 @@ class NpmManager extends PackageManager {
             "licence": "MIT"
         }
     }
+
+
+    // ---------------
+    // Getter/Setter
+    // --------------------
+}
+
+
+interface NpmPackageOptions extends PackageInitOptions {
+    name: string;
+    author: string;
+    keywords: string;
+    licence: string;
+    repository: string;
+    main: string;
+}
+
+
+
+export default NpmManager;
+export {
+    NpmPackageOptions
 }
