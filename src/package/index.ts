@@ -188,16 +188,29 @@ abstract class Package {
  * @interface
  */
 interface Configurable {
+
+    /**
+     * @returns The configuration
+     * @function
+     */
     getConfig(): object;
+
+    /**
+     * @param config {object} A package configuration
+     * @function
+     */
     setConfig(config: object): void;
 }
 
 /**
  * Package needs to modify internals to work with other packages.
- * 
  * @interface
  */
 interface Compatible {
+    /** 
+     * @param otherPackage {Package} The other package to update configurations to be compatible 
+     * @function
+     */
     update(otherPackage: Package): void;
 }
 
@@ -208,7 +221,7 @@ interface Compatible {
  * 
  * @interface
  */
-interface Executeable {
+interface Executable {
     getScripts(): object;
 } 
 
@@ -223,6 +236,7 @@ export {
     DependencyType,
     Configurable,
     Compatible,
+    Executable,
 
     // Packages
     Jest,

@@ -1,4 +1,4 @@
-import { Package, Configurable, DependencyType, Compatible } from '.';
+import { Package, Configurable, DependencyType, Compatible, Executable } from '.';
 
 
 /**
@@ -7,7 +7,7 @@ import { Package, Configurable, DependencyType, Compatible } from '.';
  * @property {object} config Base jest configurations.
  * @class 
  */
-class Jest extends Package implements Configurable, Compatible {
+class Jest extends Package implements Configurable, Compatible, Executable {
 
     private _config: object;
 
@@ -26,7 +26,6 @@ class Jest extends Package implements Configurable, Compatible {
      * Update object local template definitions. 
      * 
      * @param otherPackage {Package} The other package which will be added to the template project.
-     * @param 
      */
     update(otherPackage: Package): void {
 
@@ -53,6 +52,14 @@ class Jest extends Package implements Configurable, Compatible {
 
         
 
+    }
+
+
+    /**
+     * @returns {object} script sections for a specific package manager
+     */
+    getScripts(): object {
+        return {};
     }
 
 

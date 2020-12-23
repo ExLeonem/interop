@@ -3,7 +3,7 @@ import Package, { DependencyType } from '../package';
 
 /**
  * Manage and keep package information for yarn projects.
- * Yarn package manager.In essence is a direvative of npm. Works with package.json like npm.
+ * Yarn package manager.In essence a direvative of npm. Works with package.json like npm.
  * 
  * @class
  */
@@ -67,10 +67,15 @@ class YarnManager extends PackageManager {
         return dependencyKey;
     }
 
+    
+
     private getBaseDefinition(name: string, author: string) {
         return {
+            "name": "",
+            "author": "",
+            "licence": ""
 
-        }
+        };
     }
 }
 

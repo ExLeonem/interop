@@ -54,14 +54,6 @@ abstract class PackageManager {
 
         return false;
     }
-
-
-    /**
-     * Execute the installation command of the package manager.
-     */
-    private executeInstall(): void {
-
-    }
 }
 
 /**
@@ -82,7 +74,7 @@ interface PackageInitOptions {
     /**
      * Return the package options.
      * 
-     * @returns {object} The package definition.
+     * @returns The package definition.
      * @function
      */
     getOptions(): object
